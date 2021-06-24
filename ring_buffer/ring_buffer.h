@@ -60,7 +60,7 @@
 template<class T>
 class SPSCRingBuffer {
 public:
-    SPSCRingBuffer(size_t capacity): write_index(0), read_index(0) {
+    explicit SPSCRingBuffer(size_t capacity): write_index(0), read_index(0) {
         assert(capacity > 0);
         // Make sure computation in advance_index(...) won't ovewrflow
         assert(capacity < std::numeric_limits<size_t>::max() / 2);

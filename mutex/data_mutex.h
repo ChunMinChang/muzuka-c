@@ -25,7 +25,7 @@ class DataMutex final {
 public:
     // Prefer allocating the shared resource inside this class directly, by 
     // move constructor, to prevent accessing the resource without lock.
-    DataMutex(T&& d): data(d) {}
+    explicit DataMutex(T&& d): data(d) {}
     ~DataMutex() = default;
 
     // RAII style lock returned from DataMutex::lock().
