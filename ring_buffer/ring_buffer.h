@@ -58,7 +58,7 @@
 //     |   |   |   |    ...    |   |   |   |
 //     +---+---+---+---     ---+---+---+---+
 template<class T>
-class SPSCRingBuffer {
+class SPSCRingBuffer final {
 public:
     explicit SPSCRingBuffer(size_t capacity): write_index(0), read_index(0) {
         assert(capacity > 0);
@@ -94,6 +94,18 @@ public:
     std::vector<T> read_all() {
         return read(capacity());
     }
+
+    size_t capacity() const {
+        assert(buffer.size() > 0);
+        return buffer.size() - 1;
+    }
+
+    size_t writable_capacity() const {
+        size_t rd_idx = read_index.load(std::memory_order::memory_order_relaxed);
+        size_t wr_idx = write_index.load(std::memory_order::memory_order_relaxed);
+        return writable(rd_idx, wr_idx);
+    }
+
 private:
     // Runs on producer thread
     size_t write(const T* data, size_t count) {
@@ -134,6 +146,7 @@ private:
 
         return num;
     }
+
     // Runs on consumer thread
     std::vector<T> read(size_t count) {
         // Transitive Synchronication with Acquire-Release Ordering:
@@ -197,11 +210,6 @@ private:
 
     bool is_full(size_t rd_idx, size_t wr_idx) const {
         return (wr_idx + 1) % buffer.size() == rd_idx;
-    }
-
-    size_t capacity() const {
-        assert(buffer.size() > 0);
-        return buffer.size() - 1;
     }
 
     static inline void copy(T* dst, const T* src, size_t elem) {
