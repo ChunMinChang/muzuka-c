@@ -1,5 +1,5 @@
-#ifndef SimpleSimpleSerialTaskQueue_h
-#define SimpleSimpleSerialTaskQueue_h
+#ifndef SimpleSerialTaskQueue_h
+#define SimpleSerialTaskQueue_h
 
 #include <cassert>
 #include <condition_variable>
@@ -152,4 +152,4 @@ private:
     std::thread worker;
 };
 
-#endif // SimpleSimpleSerialTaskQueue_h
+#endif // SimpleSerialTaskQueue_h
